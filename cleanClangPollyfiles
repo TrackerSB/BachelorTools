@@ -1,0 +1,14 @@
+#!/bin/bash -x
+
+if [ -z "$1" ]; then
+    path="."
+else
+    path="$1"
+fi
+
+rm -f "$path"/*.o
+rm -f "$path"/*.s
+rm -f "$path"/*.bc
+rm -f "$path"/*.ll
+rm -f "$path"/*.preopt.ll
+rm -f "$path"/*.out

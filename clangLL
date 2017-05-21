@@ -1,0 +1,10 @@
+#!/bin/bash -xe
+
+if [ $# -lt 1 ]; then
+    (>&2 echo "You need to provide at least one file")
+    exit
+fi
+
+IFS='.' read -ra PARTS <<< "$1"
+
+clang -S -std=c++14 -O0 -emit-llvm $1 -o "${PARTS[0]}.ll"

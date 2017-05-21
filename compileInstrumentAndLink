@@ -1,0 +1,12 @@
+#!/bin/bash -xe
+
+if [ $# -lt 1 ]; then
+    (>&2 echo "You need to provide to file to compile, instrument and link")
+    exit
+fi
+
+IFS='.' read -ra PARTS <<< "$1"
+
+clangLL $1
+optPprof "${PARTS[0]}.ll"
+linkWithPprof "${PARTS[0]}Instrumented.ll"

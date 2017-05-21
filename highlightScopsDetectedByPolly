@@ -1,0 +1,10 @@
+#!/bin/bash -x
+
+if [ $# -lt 1 ]; then
+    (&>2 echo "You need to provide at least one file")
+    exit
+fi
+
+IFS='.' read -ra PARTS <<< "$1"
+
+opt -view-scops -disable-output "$1"
