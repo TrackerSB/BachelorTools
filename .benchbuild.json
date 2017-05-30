@@ -1,0 +1,569 @@
+{
+ "build_dir": {
+  "desc": "build directory of benchbuild. All intermediate projects will be placed here",
+  "default": "/home/stefan/results",
+  "value": "/home/stefan/results"
+ },
+ "perf": {
+  "config": {
+   "desc": "A configuration for the pollyperformance experiment.",
+   "default": null,
+   "value": null
+  }
+ },
+ "use_database": {
+  "desc": "LEGACY: Store results from libpprof in the database.",
+  "default": 1,
+  "value": 1
+ },
+ "slurm": {
+  "cpus_per_task": {
+   "desc": "Number of CPUs that should be requested from SLURM. Used by external tools.",
+   "default": 10,
+   "value": 10
+  },
+  "nice": {
+   "desc": "Add a niceness value on our priority",
+   "default": 0,
+   "value": 0
+  },
+  "extra_log": {
+   "desc": "Extra log file to be managed by SLURM",
+   "default": "/tmp/.slurm",
+   "value": "/tmp/.slurm"
+  },
+  "turbo": {
+   "desc": "Disable Intel Turbo Boost via SLURM. (--pstate-turbo=off)",
+   "default": false,
+   "value": false
+  },
+  "multithread": {
+   "desc": "Hint SLURM to allow multithreading. (--hint=nomultithread)",
+   "default": false,
+   "value": false
+  },
+  "partition": {
+   "desc": "The SLURM partition to use by default.",
+   "default": "chimaira",
+   "value": "chimaira"
+  },
+  "timelimit": {
+   "desc": "The timelimit we want to give to a job",
+   "default": "12:00:00",
+   "value": "12:00:00"
+  },
+  "logs": {
+   "desc": "Location the SLURM logs will be stored",
+   "default": "slurm.log",
+   "value": "slurm.log"
+  },
+  "node_dir": {
+   "desc": "Node directory, when executing on a cluster node. This is not used by benchbuild directly, but by external scripts.",
+   "default": "/home/stefan/results",
+   "value": "/home/stefan/results"
+  },
+  "script": {
+   "desc": "Name of the script that can be passed to SLURM. Used by external tools.",
+   "default": "slurm.sh",
+   "value": "slurm.sh"
+  },
+  "account": {
+   "desc": "The SLURM account to use by default.",
+   "default": "cl",
+   "value": "cl"
+  },
+  "max_running": {
+   "desc": "Limit the number of concurrent running array jobs",
+   "default": 0,
+   "value": 0
+  },
+  "node_image": {
+   "desc": "Path to the archive we want on each cluster node.",
+   "default": "./llvm.tar.gz",
+   "value": "./llvm.tar.gz"
+  },
+  "nice_clean": {
+   "desc": "Add a niceness value on our cleanup job priority",
+   "default": 2500,
+   "value": 2500
+  },
+  "exclusive": {
+   "desc": "Shall we reserve a node exclusively, or share it with others?",
+   "default": true,
+   "value": true
+  }
+ },
+ "src_dir": {
+  "desc": "source directory of benchbuild. Usually the git repo root dir.",
+  "default": "/home/stefan",
+  "value": "/home/stefan"
+ },
+ "ld_library_path": {
+  "desc": "Additional library path for benchbuild.",
+  "default": "",
+  "value": ""
+ },
+ "uchroot": {
+  "repo": {
+   "desc": "GIT Repo URL for erlent.",
+   "default": "https://github.com/PolyJIT/erlent.git/",
+   "value": "https://github.com/PolyJIT/erlent.git/"
+  }
+ },
+ "db": {
+  "pass": {
+   "desc": "The password for the PostgreSQL user used to connect to the database with.",
+   "default": "benchbuild",
+   "value": "pyiccwvfu"
+  },
+  "port": {
+   "desc": "port to connect to the database",
+   "default": 5432,
+   "value": 5432
+  },
+  "name": {
+   "desc": "The name of the PostgreSQL database that will be used.",
+   "default": "benchbuild",
+   "value": "pprof"
+  },
+  "rollback": {
+   "desc": "Rollback all operations after benchbuild completes.",
+   "default": false,
+   "value": false
+  },
+  "host": {
+   "desc": "host name of our db.",
+   "default": "localhost",
+   "value": "localhost"
+  },
+  "user": {
+   "desc": "The name of the PostgreSQL user to connect to the database with.",
+   "default": "benchbuild",
+   "value": "postgres"
+  }
+ },
+ "unionfs": {
+  "image_prefix": {
+   "desc": "Prefix for the unionfs image directory.",
+   "default": null,
+   "value": null
+  },
+  "image": {
+   "desc": "Name of the image directory",
+   "default": "./image",
+   "value": "./image"
+  },
+  "enable": {
+   "desc": "Wrap all project operations in a unionfs filesystem.",
+   "default": true,
+   "value": false
+  },
+  "base_dir": {
+   "desc": "Path of the unpacked container.",
+   "default": "./base",
+   "value": "./base"
+  }
+ },
+ "test_dir": {
+  "desc": "Additional test inputs, required for (some) run-time tests.These can be obtained from the a different repo. Most projects don't need it",
+  "default": "/home/stefan/testinputs",
+  "value": "/home/stefan/testinputs"
+ },
+ "benchbuild_prefix": {
+  "default": "/home/stefan",
+  "value": "/home/stefan"
+ },
+ "llvm": {
+  "src": {
+   "default": "/home/stefan/benchbuild-llvm",
+   "value": "/home/stefan/PolyJIT_Build/llvm-prefix/src"
+  },
+  "dir": {
+   "desc": "Path to LLVM. This will be required.",
+   "default": "/home/stefan/install",
+   "value": "/home/stefan/PolyJIT_Install"
+  }
+ },
+ "tmp_dir": {
+  "desc": "Temporary dir. This will be used for caching downloads.",
+  "default": "/home/stefan/tmp",
+  "value": "/home/stefan/tmp"
+ },
+ "cs": {
+  "components": {
+   "desc": "List of filters for compilestats components.",
+   "default": null,
+   "value": null
+  },
+  "names": {
+   "desc": "List of filters for compilestats names.",
+   "default": null,
+   "value": null
+  }
+ },
+ "env": {
+  "lookup_path": {
+   "desc": "Search path for plumbum imports",
+   "default": [],
+   "value": [
+    "/home/stefan/results/erlent/build"
+   ]
+  },
+  "binary_ld_library_path": {
+   "desc": "List of paths to be added to the LD_LIBRARY_PATH variable of all binary invocations.",
+   "default": [],
+   "value": []
+  },
+  "lookup_ld_library_path": {
+   "desc": "LD_LIBRARY_PATH for plumbum imports",
+   "default": [],
+   "value": []
+  },
+  "binary_path": {
+   "desc": "List of paths to be added to the PATH variable of all binaryinvocations.",
+   "default": [],
+   "value": []
+  },
+  "compiler_ld_library_path": {
+   "desc": "List of paths to be added to the LD_LIBRARY_PATH variable of all compiler invocations.",
+   "default": [],
+   "value": []
+  },
+  "compiler_path": {
+   "desc": "List of paths to be added to all PATH variable of all compiler invocations.",
+   "default": [],
+   "value": []
+  }
+ },
+ "container": {
+  "strategy": {
+   "polyjit": {
+    "packages": {
+     "desc": "A list of gentoo package atoms that should be merged.",
+     "default": [
+      {
+       "name": "sys-devel/gcc:5.4.0",
+       "env": {
+        "ACCEPT_KEYWORDS": "~amd64"
+       }
+      },
+      {
+       "name": "dev-db/postgresql:9.5",
+       "env": {}
+      },
+      {
+       "name": "dev-python/pip",
+       "env": {}
+      },
+      {
+       "name": "net-misc/curl",
+       "env": {}
+      },
+      {
+       "name": "sys-apps/likwid",
+       "env": {
+        "ACCEPT_KEYWORDS": "~amd64",
+        "USE": "-filecaps"
+       }
+      },
+      {
+       "name": "dev-libs/libpfm",
+       "env": {
+        "USE": "static-libs"
+       }
+      },
+      {
+       "name": "sys-process/time",
+       "env": {}
+      },
+      {
+       "name": "=dev-util/boost-build-1.58.0",
+       "env": {
+        "ACCEPT_KEYWORDS": "~amd64"
+       }
+      },
+      {
+       "name": "=dev-libs/boost-1.58.0-r1",
+       "env": {
+        "ACCEPT_KEYWORDS": "~amd64"
+       }
+      },
+      {
+       "name": "dev-libs/libpqxx",
+       "env": {}
+      }
+     ],
+     "value": [
+      {
+       "name": "sys-devel/gcc:5.4.0",
+       "env": {
+        "ACCEPT_KEYWORDS": "~amd64"
+       }
+      },
+      {
+       "name": "dev-db/postgresql:9.5",
+       "env": {}
+      },
+      {
+       "name": "dev-python/pip",
+       "env": {}
+      },
+      {
+       "name": "net-misc/curl",
+       "env": {}
+      },
+      {
+       "name": "sys-apps/likwid",
+       "env": {
+        "ACCEPT_KEYWORDS": "~amd64",
+        "USE": "-filecaps"
+       }
+      },
+      {
+       "name": "dev-libs/libpfm",
+       "env": {
+        "USE": "static-libs"
+       }
+      },
+      {
+       "name": "sys-process/time",
+       "env": {}
+      },
+      {
+       "name": "=dev-util/boost-build-1.58.0",
+       "env": {
+        "ACCEPT_KEYWORDS": "~amd64"
+       }
+      },
+      {
+       "name": "=dev-libs/boost-1.58.0-r1",
+       "env": {
+        "ACCEPT_KEYWORDS": "~amd64"
+       }
+      },
+      {
+       "name": "dev-libs/libpqxx",
+       "env": {}
+      }
+     ]
+    }
+   }
+  },
+  "mounts": {
+   "desc": "List of paths that will be mounted inside the container.",
+   "default": [],
+   "value": []
+  },
+  "output": {
+   "desc": "Output container file.",
+   "default": "container-out.tar.bz2",
+   "value": "container-out.tar.bz2"
+  },
+  "input": {
+   "desc": "Input container file/folder.",
+   "default": "container.tar.bz2",
+   "value": "container.tar.bz2"
+  },
+  "shell": {
+   "desc": "Command string that should be used as shell command.",
+   "default": "/bin/bash",
+   "value": "/bin/bash"
+  },
+  "prefered": {
+   "desc": "List of containers of which the project can chose from.Format:[{ 'path': <path> }]",
+   "default": [],
+   "value": []
+  },
+  "known": {
+   "desc": "List of known containers. Format: [{ 'path': <path>,   'hash': <hash> }]",
+   "default": [],
+   "value": []
+  },
+  "images": {
+   "default": {
+    "gentoo": "gentoo.tar.bz2",
+    "ubuntu": "ubuntu.tar.bz2"
+   },
+   "value": {
+    "gentoo": "gentoo.tar.bz2",
+    "ubuntu": "ubuntu.tar.bz2"
+   }
+  }
+ },
+ "plugins": {
+  "reports": {
+   "desc": "Report plugins.",
+   "default": [
+    "benchbuild.reports.raw"
+   ],
+   "value": [
+    "benchbuild.reports.raw"
+   ]
+  },
+  "experiments": {
+   "desc": "The experiment plugins we know about.",
+   "default": [
+    "benchbuild.experiments.raw",
+    "benchbuild.experiments.compilestats",
+    "benchbuild.experiments.polyjit",
+    "benchbuild.experiments.empty",
+    "benchbuild.experiments.papi",
+    "benchbuild.experiments.compilestats_ewpt"
+   ],
+   "value": [
+    "benchbuild.experiments.raw",
+    "benchbuild.experiments.compilestats",
+    "benchbuild.experiments.polyjit",
+    "benchbuild.experiments.empty",
+    "benchbuild.experiments.papi",
+    "benchbuild.experiments.compilestats_ewpt"
+   ]
+  },
+  "autoload": {
+   "desc": "Should automatic load of plugins be enabled?",
+   "default": true,
+   "value": true
+  },
+  "projects": {
+   "desc": "The project plugins we know about.",
+   "default": [
+    "benchbuild.projects.gentoo",
+    "benchbuild.projects.lnt.lnt",
+    "benchbuild.projects.polybench.polybench",
+    "benchbuild.projects.benchbuild.bzip2",
+    "benchbuild.projects.benchbuild.ccrypt",
+    "benchbuild.projects.benchbuild.crafty",
+    "benchbuild.projects.benchbuild.crocopat",
+    "benchbuild.projects.benchbuild.ffmpeg",
+    "benchbuild.projects.benchbuild.gzip",
+    "benchbuild.projects.benchbuild.js",
+    "benchbuild.projects.benchbuild.lammps",
+    "benchbuild.projects.benchbuild.lapack",
+    "benchbuild.projects.benchbuild.leveldb",
+    "benchbuild.projects.benchbuild.linpack",
+    "benchbuild.projects.benchbuild.lulesh",
+    "benchbuild.projects.benchbuild.luleshomp",
+    "benchbuild.projects.benchbuild.mcrypt",
+    "benchbuild.projects.benchbuild.minisat",
+    "benchbuild.projects.benchbuild.openssl",
+    "benchbuild.projects.benchbuild.postgres",
+    "benchbuild.projects.benchbuild.povray",
+    "benchbuild.projects.benchbuild.python",
+    "benchbuild.projects.benchbuild.rasdaman",
+    "benchbuild.projects.benchbuild.ruby",
+    "benchbuild.projects.benchbuild.sdcc",
+    "benchbuild.projects.benchbuild.sevenz",
+    "benchbuild.projects.benchbuild.sqlite3",
+    "benchbuild.projects.benchbuild.tcc",
+    "benchbuild.projects.benchbuild.x264",
+    "benchbuild.projects.benchbuild.xz",
+    "benchbuild.projects.apollo.scimark",
+    "benchbuild.projects.apollo.rodinia"
+   ],
+   "value": [
+    "benchbuild.projects.gentoo",
+    "benchbuild.projects.lnt.lnt",
+    "benchbuild.projects.polybench.polybench",
+    "benchbuild.projects.benchbuild.bzip2",
+    "benchbuild.projects.benchbuild.ccrypt",
+    "benchbuild.projects.benchbuild.crafty",
+    "benchbuild.projects.benchbuild.crocopat",
+    "benchbuild.projects.benchbuild.ffmpeg",
+    "benchbuild.projects.benchbuild.gzip",
+    "benchbuild.projects.benchbuild.js",
+    "benchbuild.projects.benchbuild.lammps",
+    "benchbuild.projects.benchbuild.lapack",
+    "benchbuild.projects.benchbuild.leveldb",
+    "benchbuild.projects.benchbuild.linpack",
+    "benchbuild.projects.benchbuild.lulesh",
+    "benchbuild.projects.benchbuild.luleshomp",
+    "benchbuild.projects.benchbuild.mcrypt",
+    "benchbuild.projects.benchbuild.minisat",
+    "benchbuild.projects.benchbuild.openssl",
+    "benchbuild.projects.benchbuild.postgres",
+    "benchbuild.projects.benchbuild.povray",
+    "benchbuild.projects.benchbuild.python",
+    "benchbuild.projects.benchbuild.rasdaman",
+    "benchbuild.projects.benchbuild.ruby",
+    "benchbuild.projects.benchbuild.sdcc",
+    "benchbuild.projects.benchbuild.sevenz",
+    "benchbuild.projects.benchbuild.sqlite3",
+    "benchbuild.projects.benchbuild.tcc",
+    "benchbuild.projects.benchbuild.x264",
+    "benchbuild.projects.benchbuild.xz",
+    "benchbuild.projects.apollo.scimark",
+    "benchbuild.projects.apollo.rodinia"
+   ]
+  }
+ },
+ "jobs": {
+  "desc": "Number of jobs that can be used for building and running.",
+  "default": "8",
+  "value": 8
+ },
+ "clean": {
+  "desc": "Clean temporary objects, after completion.",
+  "default": true,
+  "value": true
+ },
+ "gentoo": {
+  "rsync_proxy": {
+   "desc": "RSYNC Proxy to use for downloads.",
+   "default": null,
+   "value": null
+  },
+  "autotest_lang": {
+   "desc": "Language filter for ebuilds, like C or C++.",
+   "default": "",
+   "value": ""
+  },
+  "autotest_loc": {
+   "desc": "Location for the list of auto generated ebuilds.",
+   "default": "/tmp/gentoo-autotest",
+   "value": "/tmp/gentoo-autotest"
+  },
+  "ftp_proxy": {
+   "desc": "FTP Proxy to use for downloads.",
+   "default": null,
+   "value": null
+  },
+  "http_proxy": {
+   "desc": "HTTP Proxy to use for downloads.",
+   "default": null,
+   "value": null
+  },
+  "autotest_use": {
+   "desc": "USE filter for ebuilds. Filters packages without the given use flags.",
+   "default": "",
+   "value": ""
+  }
+ },
+ "benchbuild_ebuild": {
+  "default": "",
+  "value": ""
+ },
+ "experiment": {
+  "desc": "The experiment name we run everything under.",
+  "default": "empty",
+  "value": "empty"
+ },
+ "path": {
+  "desc": "Additional PATH variable for benchbuild.",
+  "default": "",
+  "value": ""
+ },
+ "config_file": {
+  "desc": "Config file path of benchbuild. Not guaranteed to exist.",
+  "default": null,
+  "value": "/home/stefan/.benchbuild.json"
+ },
+ "regression_prefix": {
+  "default": "/tmp/benchbuild-regressions",
+  "value": "/tmp/benchbuild-regressions"
+ },
+ "verbosity": {
+  "desc": "The verbosity level of the logger. Range: 0-4",
+  "default": 0,
+  "value": 0
+ }
+}
