@@ -1,0 +1,8 @@
+#!/bin/bash -x
+
+if [ $# -lt 1 ]; then
+    (&>2 echo "You need to provide at least one file")
+    exit
+fi
+
+opt -view-regions-only "$1" >/dev/null
