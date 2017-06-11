@@ -7,6 +7,5 @@ fi
 
 IFS='.' read -ra PARTS <<< "$1"
 
+~/PolyJIT_Build/llvm-prefix/src/llvm-build/bin/opt -S -load ~/PolyJIT_Build/polli-prefix/src/polli-build/lib/libpjit.so -load ~/PolyJIT_Build/llvm-prefix/src/llvm-build/lib/LLVMPprof.so -pprofRegion "$1" > "${PARTS[0]}InstrumentedRegion.ll"
 ~/PolyJIT_Build/llvm-prefix/src/llvm-build/bin/opt -S -load ~/PolyJIT_Build/polli-prefix/src/polli-build/lib/libpjit.so -load ~/PolyJIT_Build/llvm-prefix/src/llvm-build/lib/LLVMPprof.so -pprof "$1" > "${PARTS[0]}Instrumented.ll"
-#opt -S -load ~/PolyJIT_Build/polli-prefix/src/polli-build/lib/libpjit.so -pprof "$1" > "${PARTS[0]}Instrumented.ll"
-#opt -S -load /home/stefan/PolyJIT_Build/llvm-prefix/src/llvm-build/lib/LLVMPprof.so -pprof "$1" > "${PARTS[0]}Instrumented.ll"
