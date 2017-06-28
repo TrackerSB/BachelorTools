@@ -10,4 +10,4 @@ IFS='.' read -ra PARTS <<< "$1"
 clangLL $1
 optPprof "${PARTS[0]}.ll"
 linkWithPprof "${PARTS[0]}Instrumented.ll"
-linkWithPprof "${PARTS[0]}InstrumentedRegion.ll"
+#linkWithPprof "${PARTS[0]}InstrumentedScop.ll"
