@@ -7,4 +7,4 @@ fi
 
 IFS='.' read -ra PARTS <<< "$1"
 
-opt -view-scops -disable-output "$1"
+opt -load LLVMPolyJIT.so -view-scops -disable-output "$1"

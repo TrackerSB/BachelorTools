@@ -7,4 +7,4 @@ fi
 
 IFS='.' read -ra PARTS <<< "$1"
 
-clang "$1" ~/PolyJIT_Build/polli-prefix/src/polli-build/lib/libpjit.so -o "${PARTS[0]}.out"
+clang "$1" ~/PolyJIT_Install/lib/libpjit.so -o "${PARTS[0]}.out"
