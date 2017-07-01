@@ -7,4 +7,4 @@ fi
 
 IFS='.' read -ra PARTS <<< "$1"
 
-opt -polly-ast -analyze -q "$1" -polly-process-unprofitable
+opt -load LLVMPolly.so -polly-ast -analyze -q "$1" -polly-process-unprofitable

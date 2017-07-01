@@ -7,4 +7,4 @@ fi
 
 IFS='.' read -ra PARTS <<< "$1"
 
-opt -S -polly-canonicalize $1 > "${PARTS[0]}.preopt.ll"
+opt -load LLVMPolly.so -S -polly-canonicalize $1 > "${PARTS[0]}.preopt.ll"
