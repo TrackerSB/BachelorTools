@@ -417,7 +417,8 @@
     "benchbuild.experiments.empty",
     "benchbuild.experiments.papi",
     "benchbuild.experiments.compilestats_ewpt",
-    "benchbuild.experiments.pprof"
+    "benchbuild.experiments.profileScopPass",
+    "benchbuild.experiments.profileScopDetection"
    ]
   },
   "autoload": {
