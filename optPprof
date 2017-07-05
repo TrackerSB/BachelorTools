@@ -8,4 +8,3 @@ fi
 IFS='.' read -ra PARTS <<< "$1"
 
 opt -S -load LLVMPolyJIT.so -profileScopDetection "$1" > "${PARTS[0]}InstrumentedScopDetection.ll"
-opt -S -load LLVMPolyJIT.so -profileScopPass "$1" > "${PARTS[0]}InstrumentedScopPass.ll"

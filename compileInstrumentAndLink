@@ -9,5 +9,4 @@ IFS='.' read -ra PARTS <<< "$1"
 
 clangLL $1
 optPprof "${PARTS[0]}.ll"
-linkWithPprof "${PARTS[0]}InstrumentedScopPass.ll"
 linkWithPprof "${PARTS[0]}InstrumentedScopDetection.ll"
