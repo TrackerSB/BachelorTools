@@ -1,0 +1,10 @@
+#!/bin/bash -xe
+
+if [ $# -lt 1 ]; then
+    (>&2 echo "You need to execute the benchbuild command on")
+    exit
+fi
+
+IFS='.' read -ra PARTS <<< "$1"
+
+clang -emit-llvm -S -Xclang -load -Xclang LLVMPolyJIT.so -O3 -mllvm -polly-process-unprofitable -mllvm -profileScopDetection -lpjit "$1" -o "${PARTS[0]}.out"
