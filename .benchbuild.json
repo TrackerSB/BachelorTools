@@ -416,7 +416,6 @@
     "benchbuild.experiments.polyjit",
     "benchbuild.experiments.empty",
     "benchbuild.experiments.papi",
-    "benchbuild.experiments.compilestats_ewpt",
     "benchbuild.experiments.profileScopDetection"
    ]
   },
