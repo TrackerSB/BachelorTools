@@ -7,4 +7,4 @@ fi
 
 IFS='.' read -ra PARTS <<< "$1"
 
-clang -emit-llvm -S -Xclang -load -Xclang LLVMPolyJIT.so -O3 -mllvm -polly-process-unprofitable -mllvm -profileScopDetection -lpjit "$1" -o "${PARTS[0]}.out"
+clang -emit-llvm -S -Xclang -load -Xclang LLVMPolyJIT.so -O3 -mllvm -polly-process-unprofitable -mllvm -profileScopDetection -lpjit "$1" -o "${PARTS[0]}Instrumented.ll"
