@@ -292,8 +292,8 @@
  },
  "test_dir": {
   "desc": "Additional test inputs, required for (some) run-time tests.These can be obtained from the a different repo. Most projects don't need it",
-  "default": "/home/stefan/gitrepos/testinputs",
-  "value": "/home/stefan/gitrepos/testinputs"
+  "default": "/home/stefan/gitrepos/pprof-data",
+  "value": "/home/stefan/gitrepos/pprof-data"
  },
  "unionfs": {
   "base_dir": {
