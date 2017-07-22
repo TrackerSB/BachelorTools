@@ -203,7 +203,6 @@
     "benchbuild.projects.benchbuild.python",
     "benchbuild.projects.benchbuild.rasdaman",
     "benchbuild.projects.benchbuild.ruby",
-    "benchbuild.projects.benchbuild.sdcc",
     "benchbuild.projects.benchbuild.sevenz",
     "benchbuild.projects.benchbuild.sqlite3",
     "benchbuild.projects.benchbuild.tcc",
