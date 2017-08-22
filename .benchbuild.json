@@ -196,7 +196,6 @@
     "benchbuild.projects.benchbuild.luleshomp",
     "benchbuild.projects.benchbuild.minisat",
     "benchbuild.projects.benchbuild.openssl",
-    "benchbuild.projects.benchbuild.postgres",
     "benchbuild.projects.benchbuild.povray",
     "benchbuild.projects.benchbuild.rasdaman",
     "benchbuild.projects.benchbuild.ruby",
