@@ -53,4 +53,6 @@ FROM (
 /* Tests */
 SELECT *
 FROM project FULL OUTER JOIN run ON project."name" = run.project_name
-WHERE "domain" = 'polybench';
+WHERE group_name = 'benchbuild';
+
+SELECT count(*) FROM run WHERE project_name = 'ffmpeg';
