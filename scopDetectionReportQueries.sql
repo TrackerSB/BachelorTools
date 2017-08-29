@@ -2,6 +2,39 @@ SELECT * FROM profilescops;
 SELECT * FROM regions;
 
 
+/* Projects executed of group */
+SELECT group_name, count(group_name)
+FROM project
+GROUP BY group_name
+ORDER BY count DESC;
+
+
+/* Number of projects where at least one regions was measured */
+SELECT group_name, count(group_name)
+FROM project INNER JOIN (
+	SELECT project_name
+	FROM run INNER JOIN regions ON run.id = regions.run_id
+	GROUP BY project_name
+) AS measured ON project."name" = measured.project_name
+GROUP BY group_name;
+
+
+/* Entries per project */
+SELECT group_name, "name", count(*)
+FROM project FULL OUTER JOIN run ON project."name" = run.project_name
+GROUP BY group_name, "name"
+ORDER BY count DESC;
+
+
+/* Runs per project */
+SELECT group_name, "name", count(*)
+FROM project FULL OUTER JOIN (
+	SELECT * FROM rungroup INNER JOIN run ON run.run_group = rungroup.id
+) AS r ON project."name" = r.project_name
+GROUP BY group_name, "name"
+ORDER BY count DESC;
+
+
 /* sum up invalid reasons */
 SELECT invalid_reason, sum(count) AS count
 FROM profilescops
@@ -50,9 +83,28 @@ FROM (
 ) AS smallest INNER JOIN run ON smallest."duration [ms]" = EXTRACT(EPOCH FROM run."end"-run."begin") * 1000;
 
 
-/* Tests */
-SELECT *
-FROM project FULL OUTER JOIN run ON project."name" = run.project_name
-WHERE group_name = 'benchbuild';
-
+/* ffmpeg investigations */
 SELECT count(*) FROM run WHERE project_name = 'ffmpeg';
+
+SELECT command, count(command) AS count
+FROM run
+WHERE project_name = 'ffmpeg'
+GROUP BY command
+ORDER BY count DESC;
+
+SELECT command, count(command) AS count
+FROM rungroup INNER JOIN run ON run.run_group = rungroup.id
+WHERE project_name = 'ffmpeg'
+GROUP BY command
+ORDER BY count DESC;
+
+SELECT count(*) AS countRuns
+FROM rungroup INNER JOIN run ON run.run_group = rungroup.id
+WHERE project_name = 'ffmpeg';
+
+SELECT count(*) AS countAll
+FROM run
+WHERE project_name = 'ffmpeg';
+
+
+/* Tests */
