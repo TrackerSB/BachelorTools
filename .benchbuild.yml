@@ -1,0 +1,391 @@
+benchbuild_ebuild:
+    default: ''
+    value: ''
+benchbuild_prefix:
+    default: /home/huberst
+    value: /home/huberst
+build_dir:
+    default: /home/huberst/results
+    desc: build directory of benchbuild. All intermediate projects will be placed
+        here
+    value: /home/huberst/results
+clean:
+    default: true
+    desc: Clean temporary objects, after completion.
+    value: true
+config_file:
+    default: null
+    desc: Config file path of benchbuild. Not guaranteed to exist.
+    value: null
+container:
+    images:
+        default: &id001
+            gentoo: gentoo.tar.bz2
+            ubuntu: ubuntu.tar.bz2
+        value: *id001
+    input:
+        default: container.tar.bz2
+        desc: Input container file/folder.
+        value: container.tar.bz2
+    known:
+        default: []
+        desc: 'List of known containers. Format: [{ ''path'': <path>,   ''hash'':
+            <hash> }]'
+        value: []
+    mounts:
+        default: []
+        desc: List of paths that will be mounted inside the container.
+        value: []
+    output:
+        default: container-out.tar.bz2
+        desc: Output container file.
+        value: container-out.tar.bz2
+    prefered:
+        default: []
+        desc: 'List of containers of which the project can chose from.Format:[{ ''path'':
+            <path> }]'
+        value: []
+    prefixes:
+        default: []
+        desc: List of paths that will be treated as an existing prefix inside a container.
+        value: []
+    shell:
+        default: /bin/bash
+        desc: Command string that should be used as shell command.
+        value: /bin/bash
+    strategy:
+        polyjit:
+            packages:
+                default: &id002
+                -   env:
+                        ACCEPT_KEYWORDS: ~amd64
+                        USE: -filecaps
+                    name: sys-devel/gcc:5.4.0
+                -   env: {}
+                    name: dev-db/postgresql:9.5
+                -   env: {}
+                    name: dev-python/pip
+                -   env: {}
+                    name: net-misc/curl
+                -   env:
+                        ACCEPT_KEYWORDS: ~amd64
+                        USE: -filecaps
+                    name: sys-apps/likwid
+                -   env:
+                        ACCEPT_KEYWORDS: ~amd64
+                        USE: static-libs
+                    name: dev-libs/libpfm
+                -   env: {}
+                    name: sys-process/time
+                -   env:
+                        ACCEPT_KEYWORDS: ~amd64
+                    name: =dev-util/boost-build-1.58.0
+                -   env:
+                        ACCEPT_KEYWORDS: ~amd64
+                    name: =dev-libs/boost-1.62-r1
+                -   env: {}
+                    name: dev-libs/libpqxx
+                -   env:
+                        ACCEPT_KEYWORDS: ~amd64
+                    name: dev-lang/python-3.5.3
+                -   env:
+                        ACCEPT_KEYWORDS: ~amd64
+                    name: dev-python/dill
+                desc: A list of gentoo package atoms that should be merged.
+                value: *id002
+            sync:
+                default: true
+                desc: Update portage tree?
+                value: true
+            upgrade:
+                default: true
+                desc: Upgrade all packages?
+                value: true
+cs:
+    components:
+        default: null
+        desc: List of filters for compilestats components.
+        value: null
+    names:
+        default: null
+        desc: List of filters for compilestats names.
+        value: null
+db:
+    create_functions:
+        default: false
+        desc: Should we recreate our SQL functions from scratch?
+        value: false
+    dialect:
+        default: postgresql+psycopg2
+        desc: Which database backend should we use? Refer to sqlalchemy for available
+            options.
+        value: postgresql+psycopg2
+    host:
+        default: localhost
+        desc: host name of our db.
+        value: dbms.infosun.fim.uni-passau.de
+    name:
+        default: benchbuild
+        desc: The name of the PostgreSQL database that will be used.
+        value: huberst
+    pass:
+        default: benchbuild
+        desc: The password for the PostgreSQL user used to connect to the database
+            with.
+        value: 19m3g9mjMNLG2Co6
+    port:
+        default: 5432
+        desc: port to connect to the database
+        value: 5432
+    rollback:
+        default: false
+        desc: Rollback all operations after benchbuild completes.
+        value: false
+    user:
+        default: benchbuild
+        desc: The name of the PostgreSQL user to connect to the database with.
+        value: huberst
+debug:
+    default: false
+    desc: Should debug logging be enabled?
+    value: false
+env:
+    ld_library_path:
+        default: []
+        desc: LD_LIBRARY_PATH for benchbuild.
+        value: []
+    path:
+        default: []
+        desc: PATH for benchbuild.
+        value:
+        - /home/huberst/results/erlent/build
+experiments:
+    default: &id003
+        empty: ea5a6a0c-e738-4968-9484-94f96130f383
+    desc: Dictionary of all experiments we want a defined uuid for.
+    value: *id003
+gentoo:
+    autotest_lang:
+        default: ''
+        desc: Language filter for ebuilds, like C or C++.
+        value: ''
+    autotest_loc:
+        default: /tmp/gentoo-autotest
+        desc: Location for the list of auto generated ebuilds.
+        value: /tmp/gentoo-autotest
+    autotest_use:
+        default: ''
+        desc: USE filter for ebuilds. Filters packages without the given use flags.
+        value: ''
+    ftp_proxy:
+        default: null
+        desc: FTP Proxy to use for downloads.
+        value: null
+    http_proxy:
+        default: null
+        desc: HTTP Proxy to use for downloads.
+        value: null
+    rsync_proxy:
+        default: null
+        desc: RSYNC Proxy to use for downloads.
+        value: null
+jobs:
+    default: '8'
+    desc: Number of jobs that can be used for building and running.
+    value: 8
+ld_library_path:
+    default: ''
+    desc: Additional library path for benchbuild.
+    value: ''
+llvm:
+    dir:
+        default: /home/huberst/install
+        desc: Path to LLVM. This will be required.
+        value: /scratch/huberst/PolyJIT_Install
+    src:
+        default: /home/huberst/benchbuild-llvm
+        value: /scratch/huberst/PolyJIT_Build/llvm
+path:
+    default: ''
+    desc: Additional PATH variable for benchbuild.
+    value: ''
+perf:
+    config:
+        default: null
+        desc: A configuration for the pollyperformance experiment.
+        value: null
+plugins:
+    autoload:
+        default: true
+        desc: Should automatic load of plugins be enabled?
+        value: true
+    experiments:
+        default: &id004
+        - benchbuild.experiments.raw
+        - benchbuild.experiments.compilestats
+        - benchbuild.experiments.polyjit
+        - benchbuild.experiments.empty
+        - benchbuild.experiments.papi
+        - benchbuild.experiments.pjtest
+        - benchbuild.experiments.pj_raw
+        - benchbuild.experiments.pj_likwid
+        - benchbuild.experiments.pj_collect
+        - benchbuild.experiments.pj_cs
+        - benchbuild.experiments.pj_papi
+        - benchbuild.experiments.pj_sequence
+        - benchbuild.experiments.pollytest
+        - benchbuild.experiments.profileScopDetection
+        - benchbuild.experiments.mse
+        desc: The experiment plugins we know about.
+        value: *id004
+    projects:
+        default: &id005
+        - benchbuild.projects.gentoo
+        - benchbuild.projects.lnt.lnt
+        - benchbuild.projects.polybench.polybench
+        - benchbuild.projects.benchbuild.bots
+        - benchbuild.projects.benchbuild.bzip2
+        - benchbuild.projects.benchbuild.ccrypt
+        - benchbuild.projects.benchbuild.crafty
+        - benchbuild.projects.benchbuild.ffmpeg
+        - benchbuild.projects.benchbuild.gzip
+        - benchbuild.projects.benchbuild.js
+        - benchbuild.projects.benchbuild.lammps
+        - benchbuild.projects.benchbuild.lapack
+        - benchbuild.projects.benchbuild.leveldb
+        - benchbuild.projects.benchbuild.linpack
+        - benchbuild.projects.benchbuild.lulesh
+        - benchbuild.projects.benchbuild.luleshomp
+        - benchbuild.projects.benchbuild.mcrypt
+        - benchbuild.projects.benchbuild.minisat
+        - benchbuild.projects.benchbuild.openssl
+        - benchbuild.projects.benchbuild.povray
+        - benchbuild.projects.benchbuild.rasdaman
+        - benchbuild.projects.benchbuild.ruby
+        - benchbuild.projects.benchbuild.sevenz
+        - benchbuild.projects.benchbuild.sqlite3
+        - benchbuild.projects.benchbuild.tcc
+        - benchbuild.projects.benchbuild.x264
+        - benchbuild.projects.benchbuild.xz
+        - benchbuild.projects.apollo.scimark
+        desc: The project plugins we know about.
+        value: *id005
+    reports:
+        default: &id006
+        - benchbuild.reports.raw
+        - benchbuild.reports.status
+        desc: Report plugins.
+        value: *id006
+regression_prefix:
+    default: /tmp/benchbuild-regressions
+    value: /tmp/benchbuild-regressions
+sequence:
+    default: no_preperation
+    desc: The name of the sequence that should be used for preoptimization.
+    value: no_preperation
+slurm:
+    account:
+        default: cl
+        desc: The SLURM account to use by default.
+        value: cl
+    cpus_per_task:
+        default: 10
+        desc: Number of CPUs that should be requested from SLURM. Used by external
+            tools.
+        value: 10
+    exclusive:
+        default: true
+        desc: Shall we reserve a node exclusively, or share it with others?
+        value: true
+    extra_log:
+        default: /tmp/.slurm
+        desc: Extra log file to be managed by SLURM
+        value: /tmp/.slurm
+    logs:
+        default: slurm.log
+        desc: Location the SLURM logs will be stored
+        value: slurm.log
+    max_running:
+        default: 0
+        desc: Limit the number of concurrent running array jobs
+        value: 0
+    multithread:
+        default: false
+        desc: Hint SLURM to allow multithreading. (--hint=nomultithread)
+        value: false
+    nice:
+        default: 0
+        desc: Add a niceness value on our priority
+        value: 0
+    nice_clean:
+        default: 2500
+        desc: Add a niceness value on our cleanup job priority
+        value: 2500
+    node_dir:
+        default: /home/huberst/results
+        desc: Node directory, when executing on a cluster node. This is not used by
+            benchbuild directly, but by external scripts.
+        value: /home/huberst/results
+    node_image:
+        default: ./llvm.tar.gz
+        desc: Path to the archive we want on each cluster node.
+        value: ./llvm.tar.gz
+    partition:
+        default: chimaira
+        desc: The SLURM partition to use by default.
+        value: chimaira
+    script:
+        default: slurm.sh
+        desc: Name of the script that can be passed to SLURM. Used by external tools.
+        value: slurm.sh
+    timelimit:
+        default: '12:00:00'
+        desc: The timelimit we want to give to a job
+        value: '12:00:00'
+    turbo:
+        default: false
+        desc: Disable Intel Turbo Boost via SLURM. (--pstate-turbo=off)
+        value: false
+src_dir:
+    default: /home/huberst
+    desc: source directory of benchbuild. Usually the git repo root dir.
+    value: /home/huberst/benchbuild
+test_dir:
+    default: /home/huberst/testinputs
+    desc: Additional test inputs, required for (some) run-time tests.These can be
+        obtained from the a different repo. Most projects don't need it
+    value: /home/pjtest/pprof-test-data
+tmp_dir:
+    default: /home/huberst/tmp
+    desc: Temporary dir. This will be used for caching downloads.
+    value: /home/huberst/tmp
+uchroot:
+    repo:
+        default: https://github.com/PolyJIT/erlent.git/
+        desc: GIT Repo URL for erlent.
+        value: https://github.com/PolyJIT/erlent.git/
+unionfs:
+    base_dir:
+        default: ./base
+        desc: Path of the unpacked container.
+        value: ./base
+    enable:
+        default: true
+        desc: Wrap all project operations in a unionfs filesystem.
+        value: false
+    image:
+        default: ./image
+        desc: Name of the image directory
+        value: ./image
+    image_prefix:
+        default: null
+        desc: Prefix for the unionfs image directory.
+        value: null
+use_database:
+    default: 1
+    desc: 'LEGACY: Store results from libpprof in the database.'
+    value: 1
+verbosity:
+    default: 0
+    desc: 'The verbosity level of the logger. Range: 0-4'
+    value: 0
