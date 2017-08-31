@@ -1,6 +1,9 @@
 SELECT * FROM profilescops;
 SELECT * FROM regions;
 
+DELETE FROM profilescops;
+DELETE FROM regions;
+
 
 /* Projects executed of group */
 SELECT group_name, count(group_name)
@@ -35,11 +38,76 @@ GROUP BY group_name, "name"
 ORDER BY count DESC;
 
 
+/* average over execution times of specific SCoPs */
+SELECT "name", avg(duration)
+FROM regions
+GROUP BY "name"
+ORDER BY "name";
+
+
+/* sum of average execution times of all SCoPs */
+SELECT sum(avg) AS scopDuration
+FROM (
+	SELECT "name", avg(duration)
+	FROM regions
+	WHERE "name" LIKE '%::SCoP _'
+	GROUP BY "name"
+) AS averages;
+
+
+/* show SCoPs whose parents have no entry in regions
+ * (If there's no bug these are the SCoPs which already have maximum size due
+ * their parents are toplevel regions and cannot be instrumented)
+ */
+SELECT scopName
+FROM (
+	SELECT scopName, EXISTS(SELECT 1 FROM regions WHERE "name" LIKE parentName)
+	FROM (
+		SELECT (splitarray[1] || '::Parent' || splitarray[2]) AS parentName, "name" AS scopName 
+		FROM (
+			SELECT string_to_array("name", '::SCoP') AS splitarray, "name"
+			FROM regions
+			WHERE "name" LIKE '%::SCoP _'
+			GROUP BY "name"
+		) AS splits
+	) AS names INNER JOIN regions ON names.scopName = regions."name"
+) AS maxScops;
+
+
+/* sum of execution times of all parents (Untested) */
+SELECT sum(scopDurations) AS parentDuration
+FROM (
+	SELECT "name", avg(duration) AS scopDurations /* avg of parents */
+	FROM regions
+	WHERE "name" LIKE '%::Parent _'
+	GROUP BY "name"
+	UNION ALL
+	SELECT "name", avg(duration) /* avg of maximum scops */
+	FROM regions
+	WHERE "name" IN (
+		SELECT scopName
+		FROM (
+			SELECT scopName, EXISTS(SELECT 1 FROM regions WHERE "name" LIKE parentName)
+			FROM (
+				SELECT (splitarray[1] || '::Parent' || splitarray[2]) AS parentName, "name" AS scopName 
+				FROM (
+					SELECT string_to_array("name", '::SCoP') AS splitarray, "name"
+					FROM regions
+					WHERE "name" LIKE '%::SCoP _'
+					GROUP BY "name"
+				) AS splits
+			) AS names INNER JOIN regions ON names.scopName = regions."name"
+		) AS maxScops
+	)
+	GROUP BY "name"
+) AS averages;
+
+
 /* sum up invalid reasons */
 SELECT invalid_reason, sum(count) AS count
 FROM profilescops
 GROUP BY invalid_reason
-ORDER BY count DESC;
+ORDER BY count DESC, invalid_reason ASC;
 
 
 /* show execution times of completed projects */
