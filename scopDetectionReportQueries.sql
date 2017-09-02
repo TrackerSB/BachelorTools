@@ -1,8 +1,10 @@
 SELECT * FROM profilescops;
 SELECT * FROM regions;
+SELECT * FROM run;
 
 DELETE FROM profilescops;
 DELETE FROM regions;
+DELETE FROM run;
 
 
 /* Projects executed of group */
@@ -176,3 +178,6 @@ WHERE project_name = 'ffmpeg';
 
 
 /* Tests */
+SELECT *
+FROM profilescops INNER JOIN run ON run.id = profilescops.run_id
+WHERE run.project_name = '7z';
