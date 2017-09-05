@@ -354,7 +354,7 @@ test_dir:
     default: /home/huberst/testinputs
     desc: Additional test inputs, required for (some) run-time tests.These can be
         obtained from the a different repo. Most projects don't need it
-    value: /home/pjtest/pprof-test-data
+    value: /scratch/pjtest/pprof-test-data
 tmp_dir:
     default: /home/huberst/tmp
     desc: Temporary dir. This will be used for caching downloads.
