@@ -1,0 +1,1 @@
+grep -ai "not instrumented scops" <(java -jar ~/LogAnalyser.jar ~/logs/ | sort)
