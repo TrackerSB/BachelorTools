@@ -40,6 +40,14 @@ GROUP BY group_name, "name"
 ORDER BY count DESC;
 
 
+/* Are commands executed more than once? */
+SELECT command, count(command) AS calls
+FROM run
+GROUP BY command
+HAVING count(command) > 1
+ORDER BY calls DESC, command ASC;
+
+
 /* average over execution times of specific SCoPs */
 SELECT "name", avg(duration)
 FROM regions
@@ -61,11 +69,11 @@ FROM (
  * (If there's no bug these are the SCoPs which already have maximum size due
  * their parents are toplevel regions and cannot be instrumented)
  */
-SELECT scopName
+SELECT scopName AS toplevelregions
 FROM (
-	SELECT scopName, EXISTS(SELECT 1 FROM regions WHERE "name" LIKE parentName)
+	SELECT scopName, EXISTS(SELECT 1 FROM regions WHERE "name" LIKE parentName) AS hasParent
 	FROM (
-		SELECT (splitarray[1] || '::Parent' || splitarray[2]) AS parentName, "name" AS scopName 
+		SELECT (splitarray[1] || '::Parent ' || CAST(splitarray[2] AS INT) + 1) AS parentName, "name" AS scopName 
 		FROM (
 			SELECT string_to_array("name", '::SCoP') AS splitarray, "name"
 			FROM regions
@@ -73,7 +81,8 @@ FROM (
 			GROUP BY "name"
 		) AS splits
 	) AS names INNER JOIN regions ON names.scopName = regions."name"
-) AS maxScops;
+) AS maxScops
+WHERE NOT hasParent;
 
 
 /* sum of execution times of all parents (Untested) */
