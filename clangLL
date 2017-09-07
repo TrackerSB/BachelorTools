@@ -7,4 +7,4 @@ fi
 
 IFS='.' read -ra PARTS <<< "$1"
 
-clang -S -std=c++14 -O3 -emit-llvm $1 -o "${PARTS[0]}.ll"
+clang++ -S -std=c++14 -O3 -emit-llvm $1 -o "${PARTS[0]}.ll"

@@ -7,4 +7,4 @@ fi
 
 IFS='.' read -ra PARTS <<< "$1"
 
-clang -O3 "$1" -lpjit -o "${PARTS[0]}.out"
+clang++ -O3 "$1" -lpjit -o "${PARTS[0]}.out"
