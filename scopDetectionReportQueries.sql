@@ -140,19 +140,19 @@ WHERE run.status = 'completed'
 ORDER BY run.project_name, "duration [ms]";
 
 
-/* ratio of SCoP according to hole execution time (Untested) */
+/* ratio of SCoP according to hole execution time */
 SELECT project_name, scopDuration/"duration [ms]" AS ratio
 FROM (
 	SELECT run_id, sum(avg) AS scopDuration
 	FROM (
 		SELECT run_id, avg(duration)
 		FROM regions INNER JOIN run ON regions.run_id = run.id
-		WHERE "name" LIKE '%::SCoP _'
+		WHERE "name" LIKE '%::SCoP %'
 		GROUP BY run_id
 	) AS averages
 	GROUP BY run_id
 ) AS scopDurations INNER JOIN (
-	SELECT run.id, project_name, EXTRACT(EPOCH FROM run."end"-run."begin") * 1000 AS "duration [ms]"
+	SELECT run.id, project_name, EXTRACT(MICROSECONDS FROM run."end"-run."begin") AS "duration [ms]"
 	FROM rungroup INNER JOIN run ON run.run_group = rungroup.id
 	WHERE run.status = 'completed'
 ) AS holeDurations ON scopDurations.run_id = holeDurations.id;
@@ -208,4 +208,4 @@ WHERE project_name = 'ffmpeg';
 /* Tests */
 SELECT *
 FROM profilescops INNER JOIN run ON run.id = profilescops.run_id
-WHERE run.project_name = '7z';
+WHERE run.project_name LIKE '%SPEC%';
