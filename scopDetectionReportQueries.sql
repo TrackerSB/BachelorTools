@@ -6,6 +6,10 @@ DELETE FROM profilescops;
 DELETE FROM regions;
 DELETE FROM run;
 
+SELECT count(*) FROM profilescops;
+SELECT count(*) FROM regions;
+SELECT count(*) FROM run;
+
 
 /* Projects executed of group */
 SELECT group_name, count(group_name)
