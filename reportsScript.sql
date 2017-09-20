@@ -28,6 +28,7 @@ CREATE VIEW durationsScopsPerProject AS (
 );
 
 /* Ratio of SCoPs per project */
-CREATE VIEW ratios AS 
-SELECT dp.project_name, ds.duration / dp.duration AS ratio
-FROM durationsperproject AS dp FULL OUTER JOIN durationsscopsperproject AS ds ON dp.project_name = ds.project_name;
+CREATE VIEW ratios AS (
+	SELECT dp.project_name, ds.duration / dp.duration AS ratio
+	FROM durationsperproject AS dp FULL OUTER JOIN durationsscopsperproject AS ds ON dp.project_name = ds.project_name
+);
