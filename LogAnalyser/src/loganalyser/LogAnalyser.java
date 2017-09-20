@@ -3,11 +3,8 @@ package loganalyser;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.FileAttribute;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,9 +15,36 @@ import java.util.logging.Logger;
  * @author Stefan Huber
  */
 public class LogAnalyser {
-    
+
     private static final String[] EXPRESSIONS_TO_SUM_OVER = {"Instrumented SCoPs: ", "Not instrumented SCoPs: ",
         "Instrumented parents: ", "Not instrumented parents: "};
+
+    /**
+     * Returns the first number found.
+     *
+     * @param split
+     * @return
+     */
+    private static String trimm(String split) {
+        boolean foundBeginning = false;
+        StringBuilder foundNumber = new StringBuilder();
+        for (char c : split.toCharArray()) {
+            if (foundBeginning) {
+                if (Character.isDigit(c)) {
+                    foundNumber.append(c);
+                } else {
+                    break;
+                }
+            } else {
+                if (Character.isDigit(c)) {
+                    foundBeginning = true;
+                    foundNumber.append(c);
+                }
+            }
+        }
+
+        return foundNumber.toString();
+    }
 
     /**
      * The main method.
@@ -44,8 +68,14 @@ public class LogAnalyser {
                                 int count = lines.stream()
                                         .filter(l -> l.contains(expression))
                                         .reduce(0, (sum, line) -> {
-                                            String[] splits = line.split(" ");
-                                            return sum + Integer.parseInt(splits[splits.length - 1]);
+                                            String[] splits = line.split(":");
+                                            try {
+                                                return sum + Integer.parseInt(trimm(splits[splits.length - 1]));
+                                            } catch (NumberFormatException ex) {
+                                                Logger.getLogger(LogAnalyser.class.getName())
+                                                        .log(Level.WARNING, "Could not format: {}", line);
+                                                return 0;
+                                            }
                                         }, (sumA, sumB) -> sumA + sumB);
                                 statisticsOfFile.append(path)
                                         .append(": ")
@@ -62,11 +92,11 @@ public class LogAnalyser {
                     .reduce(new StringBuilder(), StringBuilder::append)
                     .toString());
         }
-        
+
         try {
             Process process = new ProcessBuilder("column", "-t", "-s", ":", tempFile.getAbsolutePath()).start();
             process.waitFor();
-            
+
             int b = 0;
             do {
                 System.out.print((char) b);
