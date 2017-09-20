@@ -358,7 +358,7 @@ test_dir:
 tmp_dir:
     default: /home/huberst/tmp
     desc: Temporary dir. This will be used for caching downloads.
-    value: /home/huberst/tmp
+    value: /scratch/pjtest/src
 uchroot:
     repo:
         default: https://github.com/PolyJIT/erlent.git/
