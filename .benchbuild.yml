@@ -8,7 +8,7 @@ build_dir:
     default: /home/huberst/results
     desc: build directory of benchbuild. All intermediate projects will be placed
         here
-    value: /home/huberst/results
+    value: /scratch/huberst/results
 clean:
     default: true
     desc: Clean temporary objects, after completion.
@@ -153,12 +153,13 @@ env:
     ld_library_path:
         default: []
         desc: LD_LIBRARY_PATH for benchbuild.
-        value: []
+        value:
+          - /scratch/huberst/papi_Install/lib
     path:
         default: []
         desc: PATH for benchbuild.
         value:
-        - /home/huberst/results/erlent/build
+        - /scratch/huberst/results/erlent/build
 experiments:
     default: &id003
         empty: ea5a6a0c-e738-4968-9484-94f96130f383
@@ -196,7 +197,7 @@ jobs:
 ld_library_path:
     default: ''
     desc: Additional library path for benchbuild.
-    value: ''
+    value: '/scratch/huberst/papi_Install/lib'
 llvm:
     dir:
         default: /home/huberst/install
@@ -325,7 +326,7 @@ slurm:
         default: /home/huberst/results
         desc: Node directory, when executing on a cluster node. This is not used by
             benchbuild directly, but by external scripts.
-        value: /home/huberst/results
+        value: /scratch/huberst/results
     node_image:
         default: ./llvm.tar.gz
         desc: Path to the archive we want on each cluster node.
@@ -349,7 +350,7 @@ slurm:
 src_dir:
     default: /home/huberst
     desc: source directory of benchbuild. Usually the git repo root dir.
-    value: /home/huberst/benchbuild
+    value: /scratch/huberst/benchbuild
 test_dir:
     default: /home/huberst/testinputs
     desc: Additional test inputs, required for (some) run-time tests.These can be
