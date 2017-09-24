@@ -56,10 +56,11 @@ public class LogAnalyser {
         if (args.length < 1) {
             throw new IllegalArgumentException("Path to log files missing.");
         }
-        File tempFile = File.createTempFile("LogAnalyser", "");
+        File tempFile = File.createTempFile("LogAnalyser", ".tmp");
         tempFile.deleteOnExit();
         try (FileWriter fw = new FileWriter(tempFile)) {
             fw.write(Files.list(Paths.get(args[0]).toAbsolutePath())
+                    .filter(Files::isRegularFile)
                     .map(path -> {
                         try {
                             List<String> lines = Files.readAllLines(path);
