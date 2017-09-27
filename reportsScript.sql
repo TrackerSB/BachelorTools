@@ -32,3 +32,12 @@ CREATE OR REPLACE VIEW ratios AS (
     SELECT dp.project_name, ds.duration / dp.duration AS ratio
     FROM durationsperproject AS dp FULL OUTER JOIN durationsscopsperproject AS ds ON dp.project_name = ds.project_name
 );
+
+/* Percentage of useful durations */
+SELECT g.good/o.overall AS usefulRatio
+FROM (
+    SELECT count(*)::double precision AS overall FROM regions
+) AS o, (
+    SELECT count(*) AS good FROM regions WHERE duration < 1000000000000
+) AS g;
+
