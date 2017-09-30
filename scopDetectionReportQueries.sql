@@ -1,6 +1,7 @@
 SELECT * FROM profilescops;
 SELECT * FROM regions;
 SELECT * FROM run;
+SELECT * FROM metrics;
 
 DELETE FROM profilescops;
 DELETE FROM regions;

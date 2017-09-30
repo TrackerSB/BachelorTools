@@ -8,9 +8,11 @@ CREATE OR REPLACE VIEW invalidReasons AS (
 
 /* Show the durations of every run to execute (hole execution time) */
 CREATE OR REPLACE VIEW durationsPerRun AS (
-    SELECT run.id, run.command, run.project_name, run.run_group, EXTRACT(MICROSECONDS FROM run."end" - run."begin") AS duration
-    FROM run INNER JOIN rungroup ON run.run_group = rungroup.id
+    SELECT run.id, run.command, run.project_name, run.run_group, metrics."name", metrics.value AS duration
+    FROM run INNER JOIN rungroup ON run.run_group = rungroup.id INNER JOIN metrics ON run.id = metrics.run_id
 );
+
+SELECT * FROM durationsPerRun;
 
 /* Show the hole execution time of every project */
 CREATE OR REPLACE VIEW durationsPerProject AS (
