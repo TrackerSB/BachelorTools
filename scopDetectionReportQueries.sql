@@ -10,6 +10,7 @@ DELETE FROM run;
 SELECT count(*) FROM profilescops;
 SELECT count(*) FROM regions;
 SELECT count(*) FROM run;
+SELECT count(*) FROM metrics;
 
 
 /* Projects executed of group */
@@ -213,4 +214,8 @@ WHERE project_name = 'ffmpeg';
 /* Tests */
 SELECT *
 FROM profilescops INNER JOIN run ON run.id = profilescops.run_id
-WHERE run.project_name LIKE '%SPEC%';
+WHERE run.project_name LIKE '%Multi%Bench%';
+
+SELECT *
+FROM regions
+WHERE "name" LIKE '%Multi%Bench%trie%';
