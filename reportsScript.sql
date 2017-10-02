@@ -42,7 +42,8 @@ SELECT * FROM invalidreasonsgrouped;
 /* Show the durations of every run to execute (hole execution time; RunWithTime) */
 CREATE OR REPLACE VIEW durationsPerRun AS (
     SELECT run.id, run.command, run.project_name, run.run_group, metrics."name", 1000/*?*/ * metrics.value AS duration
-    FROM run INNER JOIN rungroup ON run.run_group = rungroup.id INNER JOIN metrics ON run.id = metrics.run_id
+    FROM run INNER JOIN metrics ON run.id = metrics.run_id
+    WHERE metrics."name" LIKE 'time.real_s' /*TOOD Avoid where clause*/
 );
 
 SELECT * FROM durationsperrun;
@@ -51,9 +52,9 @@ SELECT * FROM durationsperrun;
 
 /* Show the hole execution time of every project */
 CREATE OR REPLACE VIEW durationsPerProject AS (
-    SELECT project_name, sum(duration) AS duration
+    SELECT id, sum(duration) AS duration
     FROM durationsperrun
-    GROUP BY project_name
+    GROUP BY id
 );
 
 SELECT * FROM durationsperproject;
@@ -73,10 +74,10 @@ SELECT * FROM validregionentries;
 
 /* Sum of durations of all SCoPs per project */
 CREATE OR REPLACE VIEW durationsScopsPerProject AS (
-    SELECT project_name, sum(validregionentries.duration) AS duration
+    SELECT run.id, sum(validregionentries.duration) AS duration
     FROM validregionentries LEFT OUTER JOIN run ON run.id = validregionentries.run_id
     INNER JOIN rungroup ON run.run_group = rungroup.id
-    GROUP BY run.project_name
+    GROUP BY run.id
 );
 
 SELECT * FROM durationsscopsperproject;
@@ -85,8 +86,8 @@ SELECT * FROM durationsscopsperproject;
 
 /* Calculate the percentage of the SCoPs according to the hole execution time of a project */
 CREATE OR REPLACE VIEW ratios AS (
-    SELECT dp.project_name, ds.duration / dp.duration AS ratio
-    FROM durationsperproject AS dp FULL OUTER JOIN durationsscopsperproject AS ds ON dp.project_name = ds.project_name
+    SELECT dp.id, ds.duration / dp.duration AS ratio
+    FROM durationsperproject AS dp INNER JOIN durationsscopsperproject AS ds ON dp.id = ds.id
 );
 
 SELECT * FROM ratios;
