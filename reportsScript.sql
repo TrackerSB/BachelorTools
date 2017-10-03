@@ -5,10 +5,7 @@ CREATE OR REPLACE VIEW invalidReasons AS (
     GROUP BY invalid_reason
     ORDER BY occurrence DESC
 );
-
 SELECT * FROM invalidReasons;
-
-
 
 /* Group the reasons for parents not being a valid SCoP by type of rejection */
 CREATE OR REPLACE VIEW invalidreasonsGrouped AS (
@@ -34,10 +31,7 @@ CREATE OR REPLACE VIEW invalidreasonsGrouped AS (
     GROUP BY invalid_reason
     ORDER BY sum DESC
 );
-
 SELECT * FROM invalidreasonsgrouped;
-
-
 
 /* The execution times of hole runs */
 CREATE OR REPLACE VIEW ExecTimes AS (
@@ -78,69 +72,13 @@ SELECT * FROM RatiosOfRegions;
  * 17172 entries
  */
 
-SELECT *
-FROM RatiosOfRegions
-WHERE "name" LIKE '%::SCoP';
-
-
-/* Show the durations of every run to execute (hole execution time; RunWithTime) *\/
-CREATE OR REPLACE VIEW durationsPerRun AS (
-    SELECT run.id, run.command, run.project_name, run.run_group, metrics."name", 1000 * metrics.value AS duration
-    FROM run INNER JOIN metrics ON run.id = metrics.run_id
-    WHERE metrics."name" LIKE 'time.real_s' /*TOOD Avoid where clause*\/
+CREATE OR REPLACE VIEW RatiosOfScops AS (
+	SELECT project_name, sum(ratio)
+	FROM RatiosOfRegions
+	WHERE "name" LIKE '%::SCoP'
+	GROUP BY project_name
 );
-
-SELECT * FROM durationsperrun;
-
-
-
-/* Show all entries of regions which have valid durations *\/
-CREATE OR REPLACE VIEW validRegionEntries AS ( 
-    SELECT regions.run_id, regions.duration, regions.id, regions."name", regions.events /* LEFT SEMI JOIN *\/
-    FROM regions INNER JOIN metrics ON regions.run_id = metrics.run_id
-    WHERE metrics."name" LIKE 'time.real_s' AND 1000 * /*threshold*\/10 * metrics.value >= regions.duration
-);
-
-SELECT * FROM validregionentries;
-SELECT count(*) FROM validregionentries;
-SELECT count(*) FROM regions WHERE regions.duration < 1000000000; /*Control value*\/
-
-
-
-/* Sum of durations of all SCoPs per project *\/
-CREATE OR REPLACE VIEW durationsScopsPerProject AS (
-    SELECT run.id, project_name, sum(v.duration) AS duration
-	FROM  validregionentries AS v, run
-	WHERE v.run_id = run.id AND v."name" LIKE '%::SCoP'
-	GROUP BY run.id, project_name
-);
-
-SELECT * FROM durationsscopsperproject;
-DROP VIEW durationsscopsperproject CASCADE;
-
-
-
-/* Calculate the percentage of the SCoPs according to the hole execution time of a project *\/
-CREATE OR REPLACE VIEW ratios AS (
-    SELECT dr.id, ds.duration / dr.duration AS ratio
-    FROM durationsperrun AS dr INNER JOIN durationsscopsperproject AS ds ON dr.id = ds.id
-);
-
-SELECT * FROM ratios;
-
-
-
-/* Caluculate the percentage of durations within the regions table being realistic *\/
-SELECT g.good/o.overall AS usefulRatio
-FROM (
-    SELECT count(*)::double precision AS overall FROM regions
-) AS o, (
-    SELECT count(*) AS good FROM validregionentries
-) AS g;
-
-
-
-/* Mean, standard deviation, variance (Evtl. median?)*\/
-SELECT project_name, avg(ratio)
-FROM ratios
-GROUP BY project_name;*/
+SELECT * FROM RatiosOfScops;
+/*NOTES
+ * 174 entries
+ */

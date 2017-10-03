@@ -153,7 +153,7 @@ FROM (
 	FROM (
 		SELECT run_id, avg(duration)
 		FROM regions INNER JOIN run ON regions.run_id = run.id
-		WHERE "name" LIKE '%::SCoP %'
+		WHERE "name" LIKE '%::SCoP'
 		GROUP BY run_id
 	) AS averages
 	GROUP BY run_id
