@@ -219,3 +219,8 @@ WHERE run.project_name LIKE '%Multi%Bench%';
 SELECT *
 FROM regions
 WHERE "name" LIKE '%Multi%Bench%trie%';
+
+SELECT run.id, sum(v.duration)
+FROM  validregionentries AS v, run
+WHERE v.run_id = run.id AND v."name" LIKE '%::SCoP'
+GROUP BY run.id;

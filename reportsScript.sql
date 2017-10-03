@@ -39,62 +39,98 @@ SELECT * FROM invalidreasonsgrouped;
 
 
 
-/* Show the durations of every run to execute (hole execution time; RunWithTime) */
+/* The execution times of hole runs */
+CREATE OR REPLACE VIEW ExecTimes AS (
+	SELECT run.id, run.project_name, 1000*metrics.value as execTime
+	FROM metrics INNER JOIN run ON run.id = metrics.run_id
+	WHERE metrics."name" LIKE 'time.real_s'
+);
+SELECT * FROM ExecTimes;
+/*NOTES
+ * 340 projects in run
+ * 399 time.real_s entries in metrics
+ * 281 projects
+ * 399 entries
+ */
+
+/* Table of valid regions */
+CREATE OR REPLACE VIEW ValidRegions AS (
+	SELECT regions.run_id, regions.duration, regions.id, regions."name", regions.events
+	FROM regions INNER JOIN ExecTimes ON regions.run_id = ExecTimes.id
+	WHERE regions.duration <= ExecTimes.execTime
+);
+SELECT * FROM ValidRegions;
+/*NOTES
+ * 29625 entries
+ * 17172 valid entries?!
+ */
+
+/* Ratio of valid regions */
+SELECT (SELECT count(*)::double precision AS valid FROM ValidRegions) / (SELECT count(*) AS overall FROM regions) AS usefulRatio;
+
+/* Ratio of ratios */
+CREATE OR REPLACE VIEW RatiosOfRegions AS (
+	SELECT ValidRegions.run_id, ValidRegions.id, ValidRegions.duration, ValidRegions."name", ValidRegions.events, ExecTimes.project_name, ExecTimes.execTime, ValidRegions.duration / ExecTimes.execTime AS ratio
+	FROM ValidRegions INNER JOIN ExecTimes ON ValidRegions.run_id = ExecTimes.id
+);
+SELECT * FROM RatiosOfRegions;
+/*NOTES
+ * 17172 entries
+ */
+
+SELECT *
+FROM RatiosOfRegions
+WHERE "name" LIKE '%::SCoP';
+
+
+/* Show the durations of every run to execute (hole execution time; RunWithTime) *\/
 CREATE OR REPLACE VIEW durationsPerRun AS (
-    SELECT run.id, run.command, run.project_name, run.run_group, metrics."name", 1000/*?*/ * metrics.value AS duration
+    SELECT run.id, run.command, run.project_name, run.run_group, metrics."name", 1000 * metrics.value AS duration
     FROM run INNER JOIN metrics ON run.id = metrics.run_id
-    WHERE metrics."name" LIKE 'time.real_s' /*TOOD Avoid where clause*/
+    WHERE metrics."name" LIKE 'time.real_s' /*TOOD Avoid where clause*\/
 );
 
 SELECT * FROM durationsperrun;
 
 
 
-/* Show the hole execution time of every project */
-CREATE OR REPLACE VIEW durationsPerProject AS (
-    SELECT id, sum(duration) AS duration
-    FROM durationsperrun
-    GROUP BY id
-);
-
-SELECT * FROM durationsperproject;
-
-
-
-/* Show all entries of regions which have valid durations */
+/* Show all entries of regions which have valid durations *\/
 CREATE OR REPLACE VIEW validRegionEntries AS ( 
-    SELECT regions.run_id, regions.duration, regions.id, regions."name", regions.events /* LEFT SEMI JOIN */
+    SELECT regions.run_id, regions.duration, regions.id, regions."name", regions.events /* LEFT SEMI JOIN *\/
     FROM regions INNER JOIN metrics ON regions.run_id = metrics.run_id
-    WHERE metrics.value >= regions.duration
+    WHERE metrics."name" LIKE 'time.real_s' AND 1000 * /*threshold*\/10 * metrics.value >= regions.duration
 );
 
 SELECT * FROM validregionentries;
+SELECT count(*) FROM validregionentries;
+SELECT count(*) FROM regions WHERE regions.duration < 1000000000; /*Control value*\/
 
 
 
-/* Sum of durations of all SCoPs per project */
+/* Sum of durations of all SCoPs per project *\/
 CREATE OR REPLACE VIEW durationsScopsPerProject AS (
-    SELECT run.id, sum(validregionentries.duration) AS duration
-    FROM validregionentries LEFT OUTER JOIN run ON run.id = validregionentries.run_id
-    INNER JOIN rungroup ON run.run_group = rungroup.id
-    GROUP BY run.id
+    SELECT run.id, project_name, sum(v.duration) AS duration
+	FROM  validregionentries AS v, run
+	WHERE v.run_id = run.id AND v."name" LIKE '%::SCoP'
+	GROUP BY run.id, project_name
 );
 
 SELECT * FROM durationsscopsperproject;
+DROP VIEW durationsscopsperproject CASCADE;
 
 
 
-/* Calculate the percentage of the SCoPs according to the hole execution time of a project */
+/* Calculate the percentage of the SCoPs according to the hole execution time of a project *\/
 CREATE OR REPLACE VIEW ratios AS (
-    SELECT dp.id, ds.duration / dp.duration AS ratio
-    FROM durationsperproject AS dp INNER JOIN durationsscopsperproject AS ds ON dp.id = ds.id
+    SELECT dr.id, ds.duration / dr.duration AS ratio
+    FROM durationsperrun AS dr INNER JOIN durationsscopsperproject AS ds ON dr.id = ds.id
 );
 
 SELECT * FROM ratios;
 
 
 
-/* Caluculate the percentage of durations within the regions table being realistic */
+/* Caluculate the percentage of durations within the regions table being realistic *\/
 SELECT g.good/o.overall AS usefulRatio
 FROM (
     SELECT count(*)::double precision AS overall FROM regions
@@ -104,7 +140,7 @@ FROM (
 
 
 
-/* Mean, standard deviation, variance (Evtl. median?)*/
+/* Mean, standard deviation, variance (Evtl. median?)*\/
 SELECT project_name, avg(ratio)
 FROM ratios
-GROUP BY project_name;
+GROUP BY project_name;*/
