@@ -1,11 +1,16 @@
 /* Show statistic over which reasons for a parent being invalid shows up how often */
 CREATE OR REPLACE VIEW invalidReasons AS (
-    SELECT invalid_reason, sum(count) AS occurrence
-    FROM profilescops
-    GROUP BY invalid_reason
+    SELECT profileScops.invalid_reason, sum(count) AS occurrence
+    FROM profilescops, run
+    WHERE run.id = profileScops.run_id AND run.experiment_group = 'e6d41837-3085-4ae1-8fa1-39a3ce3c3292'
+    GROUP BY profileScops.invalid_reason
     ORDER BY occurrence DESC
 );
+
 SELECT * FROM invalidReasons;
+SELECT count(*) FROM invalidReasons;
+
+
 
 /* Group the reasons for parents not being a valid SCoP by type of rejection */
 CREATE OR REPLACE VIEW invalidreasonsGrouped AS (
@@ -31,13 +36,14 @@ CREATE OR REPLACE VIEW invalidreasonsGrouped AS (
     GROUP BY invalid_reason
     ORDER BY sum DESC
 );
+
 SELECT * FROM invalidreasonsgrouped;
 
 /* The execution times of hole runs */
 CREATE OR REPLACE VIEW ExecTimes AS (
-	SELECT run.id, run.project_name, 1000*metrics.value as execTime
-	FROM metrics INNER JOIN run ON run.id = metrics.run_id
-	WHERE metrics."name" LIKE 'time.real_s'
+    SELECT run.id, run.project_name, 1000*metrics.value as execTime
+    FROM metrics INNER JOIN run ON run.id = metrics.run_id
+    WHERE metrics."name" LIKE 'time.real_s'
 );
 SELECT * FROM ExecTimes;
 /*NOTES
@@ -49,9 +55,9 @@ SELECT * FROM ExecTimes;
 
 /* Table of valid regions */
 CREATE OR REPLACE VIEW ValidRegions AS (
-	SELECT regions.run_id, regions.duration, regions.id, regions."name", regions.events
-	FROM regions INNER JOIN ExecTimes ON regions.run_id = ExecTimes.id
-	WHERE regions.duration <= ExecTimes.execTime
+    SELECT regions.run_id, regions.duration, regions.id, regions."name", regions.events
+    FROM regions INNER JOIN ExecTimes ON regions.run_id = ExecTimes.id
+    WHERE regions.duration <= ExecTimes.execTime
 );
 SELECT * FROM ValidRegions;
 /*NOTES
@@ -64,8 +70,8 @@ SELECT (SELECT count(*)::double precision AS valid FROM ValidRegions) / (SELECT 
 
 /* Ratio of ratios */
 CREATE OR REPLACE VIEW RatiosOfRegions AS (
-	SELECT ValidRegions.run_id, ValidRegions.id, ValidRegions.duration, ValidRegions."name", ValidRegions.events, ExecTimes.project_name, ExecTimes.execTime, ValidRegions.duration / ExecTimes.execTime AS ratio
-	FROM ValidRegions INNER JOIN ExecTimes ON ValidRegions.run_id = ExecTimes.id
+    SELECT ValidRegions.run_id, ValidRegions.id, ValidRegions.duration, ValidRegions."name", ValidRegions.events, ExecTimes.project_name, ExecTimes.execTime, ValidRegions.duration / ExecTimes.execTime AS ratio
+    FROM ValidRegions INNER JOIN ExecTimes ON ValidRegions.run_id = ExecTimes.id
 );
 SELECT * FROM RatiosOfRegions;
 /*NOTES
@@ -73,10 +79,10 @@ SELECT * FROM RatiosOfRegions;
  */
 
 CREATE OR REPLACE VIEW RatiosOfScops AS (
-	SELECT project_name, sum(ratio)
-	FROM RatiosOfRegions
-	WHERE "name" LIKE '%::SCoP'
-	GROUP BY project_name
+    SELECT project_name, sum(ratio)
+    FROM RatiosOfRegions
+    WHERE "name" LIKE '%::SCoP'
+    GROUP BY project_name
 );
 SELECT * FROM RatiosOfScops;
 /*NOTES
