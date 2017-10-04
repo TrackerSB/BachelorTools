@@ -6,11 +6,8 @@ CREATE OR REPLACE VIEW invalidReasons AS (
     GROUP BY profileScops.invalid_reason
     ORDER BY occurrence DESC
 );
-
 SELECT * FROM invalidReasons;
 SELECT count(*) FROM invalidReasons;
-
-
 
 /* Group the reasons for parents not being a valid SCoP by type of rejection */
 CREATE OR REPLACE VIEW invalidreasonsGrouped AS (
@@ -36,7 +33,6 @@ CREATE OR REPLACE VIEW invalidreasonsGrouped AS (
     GROUP BY invalid_reason
     ORDER BY sum DESC
 );
-
 SELECT * FROM invalidreasonsgrouped;
 
 /* The execution times of hole runs */
