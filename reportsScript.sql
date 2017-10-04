@@ -43,9 +43,10 @@ SELECT * FROM invalidreasonsgrouped;
 CREATE OR REPLACE VIEW ExecTimes AS (
     SELECT run.id, run.project_name, 1000*metrics.value as execTime
     FROM metrics INNER JOIN run ON run.id = metrics.run_id
-    WHERE metrics."name" LIKE 'time.real_s'
+    WHERE run.experiment_group = 'e6d41837-3085-4ae1-8fa1-39a3ce3c3292' AND metrics."name" LIKE 'time.real_s'
 );
 SELECT * FROM ExecTimes;
+SELECT count(*) FROM ExecTimes;
 /*NOTES
  * 340 projects in run
  * 399 time.real_s entries in metrics
@@ -60,6 +61,7 @@ CREATE OR REPLACE VIEW ValidRegions AS (
     WHERE regions.duration <= ExecTimes.execTime
 );
 SELECT * FROM ValidRegions;
+SELECT count(*) FROM ValidRegions;
 /*NOTES
  * 29625 entries
  * 17172 valid entries?!
@@ -74,6 +76,7 @@ CREATE OR REPLACE VIEW RatiosOfRegions AS (
     FROM ValidRegions INNER JOIN ExecTimes ON ValidRegions.run_id = ExecTimes.id
 );
 SELECT * FROM RatiosOfRegions;
+SELECT count(*) FROM RatiosOfRegions;
 /*NOTES
  * 17172 entries
  */
@@ -85,6 +88,7 @@ CREATE OR REPLACE VIEW RatiosOfScops AS (
     GROUP BY project_name
 );
 SELECT * FROM RatiosOfScops;
+SELECT count(*) FROM RatiosOfScops;
 /*NOTES
  * 174 entries
  */
