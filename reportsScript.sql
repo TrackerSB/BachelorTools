@@ -1,3 +1,40 @@
+/* Show statistic over which reasons for a parent being invalid shows up how often */
+CREATE OR REPLACE VIEW invalidReasons AS (
+    SELECT profileScops.invalid_reason, sum(count) AS occurrence
+    FROM profilescops, run
+    WHERE run.id = profileScops.run_id AND run.experiment_group = 'e6d41837-3085-4ae1-8fa1-39a3ce3c3292'
+    GROUP BY profileScops.invalid_reason
+    ORDER BY occurrence DESC
+);
+SELECT * FROM invalidReasons;
+SELECT count(*) FROM invalidReasons;
+
+/* Group the reasons for parents not being a valid SCoP by type of rejection */
+CREATE OR REPLACE VIEW invalidreasonsGrouped AS (
+    SELECT invalid_reason, sum(occurrence) AS sum
+    FROM (SELECT CASE
+                WHEN invalid_reason LIKE 'Non affine loop bound ''***COULDNOTCOMPUTE***''%' THEN 'Non affine loop bound ''***COULDNOTCOMPUTE***'''
+                WHEN invalid_reason LIKE 'Non affine loop bound%' THEN 'Non affine loop bound'
+                WHEN invalid_reason LIKE 'Condition in BB%neither constant nor an icmp instruction' THEN 'Condition in BB neither constant nor an icmp instruction'
+                WHEN invalid_reason LIKE 'Call instruction:%' THEN 'Call instruction'
+                WHEN invalid_reason LIKE 'Non affine access function%' THEN 'Non affine access function'
+                WHEN invalid_reason LIKE 'Non affine branch in BB%' THEN 'Non affine branch in BB'
+                WHEN invalid_reason LIKE 'Possible aliasing%' THEN 'Possible aliasing'
+                WHEN invalid_reason LIKE 'Base address not invariant in current region%' THEN 'Base address not invariant in current region'
+                WHEN invalid_reason LIKE 'Alloca instruction%' THEN 'Alloca instruction'
+                WHEN invalid_reason LIKE 'Non-simple memory access%' THEN 'Non-simple memory access'
+                WHEN invalid_reason LIKE 'Find bad intToptr prt%' THEN 'Find bad intToPointer pointer'
+                WHEN invalid_reason LIKE 'Condition based on ''undef'' value in BB%' THEN 'Condition based on undefined value in BB'
+                WHEN invalid_reason LIKE 'Unreachable in exit block%' THEN 'Unreachable in exit block'
+                ELSE invalid_reason
+            END, occurrence
+        FROM invalidReasons
+    ) AS grouped
+    GROUP BY invalid_reason
+    ORDER BY sum DESC
+);
+SELECT * FROM invalidreasonsgrouped;
+
 DROP FUNCTION public.profile_scops_exec_times(exp_ids uuid[]);
 CREATE OR REPLACE FUNCTION public.profile_scops_exec_times(exp_ids uuid[])
   RETURNS TABLE(project character varying, execTime_us DOUBLE PRECISION) AS
@@ -144,8 +181,8 @@ BEGIN
 END
 $BODY$ language plpgsql;
 
-DROP FUNCTION IF EXISTS profile_scops_ratios_parents(exp_ids UUID[]);
-CREATE OR REPLACE FUNCTION profile_scops_ratios_parents(exp_ids UUID[])
+DROP FUNCTION IF EXISTS profile_scops_ratios_max_regions(exp_ids UUID[]);
+CREATE OR REPLACE FUNCTION profile_scops_ratios_max_regions(exp_ids UUID[])
     RETURNS TABLE (
         project VARCHAR,
         T_Parent NUMERIC,
